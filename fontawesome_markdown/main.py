@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 from markdown.extensions import Extension
 from markdown.inlinepatterns import Pattern
-from markdown.util import etree
+import xml.etree.ElementTree as ET
 from .icon_list import icons
 import json
 
@@ -27,7 +27,7 @@ class FontAwesomePattern(Pattern):
     'Markdown pattern class for matching things that look like FA icons'
 
     def handleMatch(self, m):
-        el = etree.Element('i')
+        el = ET.Element('i')
         prefix = m.group(2)
         icon_name = m.group(3)
         size = m.group(4)
@@ -60,9 +60,10 @@ class FontAwesomePattern(Pattern):
 class FontAwesomeExtension(Extension):
     'Pick a good spot for calling the pattern defined above'
 
-    def extendMarkdown(self, md, md_globals):
+    def extendMarkdown(self, md, md_globals=None):
         fontawesome = FontAwesomePattern(fontawesome_pattern)
-        md.inlinePatterns.add('fontawesome', fontawesome, '<reference')
+        md.inlinePatterns.register(fontawesome, 'fontawesome', 185)
+        # md.inlinePatterns.add('fontawesome', fontawesome, '<reference')
 
 
 def makeExtension(*args, **kwargs):
